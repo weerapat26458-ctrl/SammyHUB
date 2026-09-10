@@ -1,150 +1,4 @@
--- ==============================================
--- SammyHUB Key System
--- ==============================================
-local CoreGui = game:GetService("CoreGui")
 local HttpService = game:GetService("HttpService")
-
--- Configuration
-local KeyLink = "https://raw.githubusercontent.com/weerapat26458-ctrl/SammyHUB/main/keys.txt"
-local DiscordLink = "https://discord.gg/yourdiscordlink" -- Change this later
-
-if CoreGui:FindFirstChild("SammyKeySystem") then
-    CoreGui.SammyKeySystem:Destroy()
-end
-
-local KeySystemGui = Instance.new("ScreenGui")
-KeySystemGui.Name = "SammyKeySystem"
-KeySystemGui.Parent = CoreGui
-
-local MainFrame = Instance.new("Frame")
-MainFrame.Size = UDim2.new(0, 350, 0, 200)
-MainFrame.Position = UDim2.new(0.5, -175, 0.5, -100)
-MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-MainFrame.BorderSizePixel = 0
-MainFrame.Active = true
-MainFrame.Draggable = true
-MainFrame.Parent = KeySystemGui
-
-local UICorner = Instance.new("UICorner")
-UICorner.CornerRadius = UDim.new(0, 8)
-UICorner.Parent = MainFrame
-
-local Title = Instance.new("TextLabel")
-Title.Size = UDim2.new(1, 0, 0, 40)
-Title.BackgroundTransparency = 1
-Title.Text = "Sammy HUB - Key System"
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.TextSize = 18
-Title.Font = Enum.Font.GothamBold
-Title.Parent = MainFrame
-
-local KeyInput = Instance.new("TextBox")
-KeyInput.Size = UDim2.new(0.8, 0, 0, 40)
-KeyInput.Position = UDim2.new(0.1, 0, 0.35, 0)
-KeyInput.PlaceholderText = "Enter your Key here..."
-KeyInput.Text = ""
-KeyInput.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-KeyInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-KeyInput.TextSize = 14
-KeyInput.Font = Enum.Font.Gotham
-KeyInput.Parent = MainFrame
-
-local InputCorner = Instance.new("UICorner")
-InputCorner.CornerRadius = UDim.new(0, 6)
-InputCorner.Parent = KeyInput
-
-local VerifyButton = Instance.new("TextButton")
-VerifyButton.Size = UDim2.new(0.38, 0, 0, 35)
-VerifyButton.Position = UDim2.new(0.1, 0, 0.65, 0)
-VerifyButton.Text = "Verify Key"
-VerifyButton.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
-VerifyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-VerifyButton.TextSize = 14
-VerifyButton.Font = Enum.Font.GothamBold
-VerifyButton.Parent = MainFrame
-
-local BtnCorner = Instance.new("UICorner")
-BtnCorner.CornerRadius = UDim.new(0, 6)
-BtnCorner.Parent = VerifyButton
-
-local GetKeyButton = Instance.new("TextButton")
-GetKeyButton.Size = UDim2.new(0.38, 0, 0, 35)
-GetKeyButton.Position = UDim2.new(0.52, 0, 0.65, 0)
-GetKeyButton.Text = "Get Key"
-GetKeyButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-GetKeyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-GetKeyButton.TextSize = 14
-GetKeyButton.Font = Enum.Font.GothamBold
-GetKeyButton.Parent = MainFrame
-
-local GetKeyCorner = Instance.new("UICorner")
-GetKeyCorner.CornerRadius = UDim.new(0, 6)
-GetKeyCorner.Parent = GetKeyButton
-
-local StatusText = Instance.new("TextLabel")
-StatusText.Size = UDim2.new(1, 0, 0, 20)
-StatusText.Position = UDim2.new(0, 0, 0.85, 0)
-StatusText.BackgroundTransparency = 1
-StatusText.Text = "Status: Waiting for key..."
-StatusText.TextColor3 = Color3.fromRGB(150, 150, 150)
-StatusText.TextSize = 12
-StatusText.Font = Enum.Font.Gotham
-StatusText.Parent = MainFrame
-
-local IsVerified = false
-
-GetKeyButton.MouseButton1Click:Connect(function()
-    if setclipboard then
-        setclipboard(DiscordLink)
-        StatusText.Text = "Discord link copied to clipboard!"
-    else
-        StatusText.Text = "Join Discord: " .. DiscordLink
-    end
-end)
-
-VerifyButton.MouseButton1Click:Connect(function()
-    StatusText.Text = "Checking key..."
-    local keyToVerify = string.gsub(KeyInput.Text, " ", "")
-    
-    if keyToVerify == "" then
-        StatusText.Text = "Please enter a key!"
-        StatusText.TextColor3 = Color3.fromRGB(255, 100, 100)
-        return
-    end
-
-    local success, validKeys = pcall(function()
-        return game:HttpGet(KeyLink)
-    end)
-
-    if not success or not validKeys then
-        StatusText.Text = "Failed to connect to GitHub."
-        StatusText.TextColor3 = Color3.fromRGB(255, 100, 100)
-        return
-    end
-
-    local found = false
-    for k in string.gmatch(validKeys, "[^\r\n]+") do
-        if k == keyToVerify then
-            found = true
-            break
-        end
-    end
-
-    if found then
-        StatusText.Text = "Key Verified! Loading HUB..."
-        StatusText.TextColor3 = Color3.fromRGB(100, 255, 100)
-        task.wait(1)
-        KeySystemGui:Destroy()
-        IsVerified = true
-    else
-        StatusText.Text = "Invalid Key!"
-        StatusText.TextColor3 = Color3.fromRGB(255, 100, 100)
-    end
-end)
-
--- Yield the script until verified
-repeat task.wait(0.5) until IsVerified
-
 -- ==============================================
 -- Unload Old Instances
 -- ==============================================
@@ -263,7 +117,7 @@ for _, b in ipairs(BuffList) do table.insert(UI_BuffOptions, b) end
 -- ==============================================
 local _G_State = {
     AutoRoll = false,
-    RollDelay = 2,
+    RollDelay = 2.5,
     AutoBuy = false,
     CheckDelay = 0.5,
     BuyRarities = {},
@@ -271,7 +125,12 @@ local _G_State = {
     BuyChars = {},
     BuyBuffs = {},
     AutoZone = false,
-    ZoneDelay = 2
+    ZoneDelay = 2,
+    AutoPotion = false,
+    PotionTypes = {},
+    AutoChallenge = false,
+    ChallengeTypes = {},
+    InChallenge = false
 }
 
 for rarity, _ in pairs(UnitsByRarity) do
@@ -336,6 +195,24 @@ local function isPlayersObject(obj, player)
             if (ownerVal:IsA("StringValue") or ownerVal:IsA("IntValue")) and (ownerVal.Value == player.Name or tostring(ownerVal.Value) == tostring(player.UserId)) then return true end
         end
         current = current.Parent
+    end
+    return false
+end
+
+local function isGameInChallenge()
+    local player = game:GetService("Players").LocalPlayer
+    if not player then return false end
+    
+    if player:GetAttribute("InChallenge") == true then return true end
+    if player:GetAttribute("ChallengeMode") == true then return true end
+    
+    local playerGui = player:FindFirstChild("PlayerGui")
+    if playerGui then
+        local chalHUD = playerGui:FindFirstChild("ChallengeHUD") or playerGui:FindFirstChild("ChallengeHUD", true)
+        if chalHUD then
+            if chalHUD:IsA("ScreenGui") and chalHUD.Enabled then return true end
+            if chalHUD:IsA("Frame") and chalHUD.Visible and chalHUD.AbsolutePosition.X > 0 then return true end
+        end
     end
     return false
 end
@@ -456,81 +333,6 @@ pcall(function()
     end
 end)
 
--- Key System
-local KeyScreen = Instance.new("ScreenGui")
-KeyScreen.Name = "AutoRollPro_KeySystem"
-KeyScreen.Enabled = false
-KeyScreen.ResetOnSpawn = false
-KeyScreen.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-pcall(function() KeyScreen.Parent = game:GetService("CoreGui") end)
-if not KeyScreen.Parent then KeyScreen.Parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui") end
-
-local KeyCard = Instance.new("Frame", KeyScreen)
-KeyCard.Size = UDim2.new(0, 360, 0, 200)
-KeyCard.Position = UDim2.new(0.5, -180, 0.5, -100)
-KeyCard.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
-KeyCard.BorderSizePixel = 0
-local UICorner = Instance.new("UICorner", KeyCard)
-UICorner.CornerRadius = UDim.new(0, 8)
-local UIStroke = Instance.new("UIStroke", KeyCard)
-UIStroke.Color = Color3.fromRGB(60, 60, 65)
-
-local Title = Instance.new("TextLabel", KeyCard)
-Title.Size = UDim2.new(1, 0, 0, 40)
-Title.Position = UDim2.new(0, 0, 0, 16)
-Title.BackgroundTransparency = 1
-Title.Text = "SammmyHUB"
-Title.Font = Enum.Font.GothamBold
-Title.TextSize = 20
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-
-local SubTitle = Instance.new("TextLabel", KeyCard)
-SubTitle.Size = UDim2.new(1, 0, 0, 20)
-SubTitle.Position = UDim2.new(0, 0, 0, 50)
-SubTitle.BackgroundTransparency = 1
-SubTitle.Text = "Enter your key to continue"
-SubTitle.Font = Enum.Font.Gotham
-SubTitle.TextSize = 13
-SubTitle.TextColor3 = Color3.fromRGB(180, 180, 180)
-
-local Input = Instance.new("TextBox", KeyCard)
-Input.Size = UDim2.new(0.8, 0, 0, 38)
-Input.Position = UDim2.new(0.1, 0, 0, 86)
-Input.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
-Input.Text = ""
-Input.PlaceholderText = "Enter Key..."
-Input.PlaceholderColor3 = Color3.fromRGB(150, 150, 150)
-Input.Font = Enum.Font.Gotham
-Input.TextSize = 14
-Input.TextColor3 = Color3.fromRGB(255, 255, 255)
-Input.BorderSizePixel = 0
-local InputCorner = Instance.new("UICorner", Input)
-InputCorner.CornerRadius = UDim.new(0, 6)
-
-local UnlockBtn = Instance.new("TextButton", KeyCard)
-UnlockBtn.Size = UDim2.new(0.8, 0, 0, 38)
-UnlockBtn.Position = UDim2.new(0.1, 0, 0, 136)
-UnlockBtn.BackgroundColor3 = Color3.fromRGB(0, 120, 215)
-UnlockBtn.Text = "Unlock"
-UnlockBtn.Font = Enum.Font.GothamBold
-UnlockBtn.TextSize = 14
-UnlockBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-UnlockBtn.BorderSizePixel = 0
-local BtnCorner = Instance.new("UICorner", UnlockBtn)
-BtnCorner.CornerRadius = UDim.new(0, 6)
-
-local VALID_KEYS = {"12300123", "Nahee"}
-local keyPassed = false
-local savedKeyFile = "AutoRollProKey.txt"
-
-pcall(function()
-    if isfile and isfile(savedKeyFile) then
-        local saved = readfile(savedKeyFile)
-        for _, k in ipairs(VALID_KEYS) do
-            if saved == k then keyPassed = true; break end
-        end
-    end
-end)
 
 local function LoadFluentUI()
     local Window = Fluent:CreateWindow({
@@ -575,12 +377,17 @@ local function LoadFluentUI()
                                 if isPlayersObject(prompt, player) then
                                     local promptPart = prompt.Parent
                                     if rootPart and promptPart and promptPart:IsA("BasePart") then
+                                        local maxDist = prompt.MaxActivationDistance or 10
                                         local distance = (rootPart.Position - promptPart.Position).Magnitude
-                                        if distance <= (prompt.MaxActivationDistance or 10) + 10 then
-                                            fireproximityprompt(prompt)
-                                            rolled = true
-                                            break
+                                        
+                                        if distance > maxDist then
+                                            rootPart.CFrame = CFrame.new(promptPart.Position + Vector3.new(0, 3, 0))
+                                            task.wait(0.1) -- Allow physics and server to register position
                                         end
+                                        
+                                        fireproximityprompt(prompt)
+                                        rolled = true
+                                        break
                                     else
                                         fireproximityprompt(prompt)
                                         rolled = true
@@ -604,24 +411,12 @@ local function LoadFluentUI()
 
     Tabs.Automation:AddSlider("RollDelaySlider", {
         Title = "Roll Delay (s)",
-        Default = 2,
+        Default = 2.5,
         Min = 0,
         Max = 5,
         Rounding = 1,
         Callback = function(Value)
             _G_State.RollDelay = Value
-        end
-    })
-
-    _G_State.PrestigeLevel = 65
-    Tabs.Automation:AddSlider("PrestigeLevelSlider", {
-        Title = "Prestige at Level",
-        Default = 65,
-        Min = 1,
-        Max = 300,
-        Rounding = 0,
-        Callback = function(Value)
-            _G_State.PrestigeLevel = Value
         end
     })
 
@@ -638,39 +433,49 @@ local function LoadFluentUI()
                 while _G_State.AutoPrestige and getgenv()._AutoRollRunning do
                     pcall(function()
                         local player = game:GetService("Players").LocalPlayer
-                        local currentLevel = player:GetAttribute("Level") or 0
-                        local reqLevel = _G_State.PrestigeLevel or 65
                         
-                        -- Only attempt prestige if our level meets the slider requirement
-                        if currentLevel >= reqLevel then
+                        local canPrestige = false
+                        local foundPrestigeBtn = nil
+                        
+                        -- 1. Smart UI Detection (Read "X / Y Levels" text)
+                        if player and player:FindFirstChild("PlayerGui") then
+                            for _, gui in ipairs(player.PlayerGui:GetDescendants()) do
+                                -- Check for Progress Text like "16 / 10 Levels"
+                                if gui:IsA("TextLabel") and gui.Visible then
+                                    local txt = gui.Text
+                                    local curr, req = string.match(txt, "(%d+)%s*/%s*(%d+)%s*Levels?")
+                                    if curr and req then
+                                        if tonumber(curr) >= tonumber(req) then
+                                            canPrestige = true
+                                        end
+                                    end
+                                end
+                                
+                                -- Find the Prestige button
+                                if gui:IsA("TextButton") and gui.Visible then
+                                    local txt = string.lower(string.gsub(tostring(gui.Text or gui.ContentText), "<[^>]+>", ""))
+                                    if (string.find(txt, "prestige") or string.find(txt, "rebirth")) and not string.find(txt, "shop") and not string.find(txt, "store") then
+                                        foundPrestigeBtn = gui
+                                    end
+                                end
+                            end
+                        end
+                        
+                        if canPrestige then
+                            -- Method 1: Remote Fire (Fastest but might be changed by devs)
                             local pRemote = RS:FindFirstChild("Prestige", true) or RS:FindFirstChild("PrestigeRequest", true) or RS:FindFirstChild("PrestigeEvent", true)
                             if pRemote then
                                 if pRemote:IsA("RemoteEvent") then pRemote:FireServer() else pRemote:InvokeServer() end
                             end
                             
-                            if player and player:FindFirstChild("PlayerGui") then
-                                for _, gui in ipairs(player.PlayerGui:GetDescendants()) do
-                                    if gui:IsA("TextButton") and gui.Visible then
-                                        local txt = ""
-                                        pcall(function() txt = gui.ContentText end)
-                                        if not txt or txt == "" then txt = gui.Text end
-                                        
-                                        if txt and txt ~= "" then
-                                            txt = string.lower(string.gsub(tostring(txt), "<[^>]+>", ""))
-                                            
-                                            if (string.find(txt, "prestige") or string.find(txt, "rebirth")) and not string.find(txt, "shop") and not string.find(txt, "store") then
-                                                if getconnections then
-                                                    for _, conn in ipairs(getconnections(gui.MouseButton1Click)) do conn:Fire() end
-                                                    for _, conn in ipairs(getconnections(gui.Activated)) do conn:Fire() end
-                                                end
-                                            end
-                                        end
-                                    end
-                                end
+                            -- Method 2: Smart Click (Safest, simulates real player click)
+                            if foundPrestigeBtn and getconnections then
+                                for _, conn in ipairs(getconnections(foundPrestigeBtn.MouseButton1Click)) do conn:Fire() end
+                                for _, conn in ipairs(getconnections(foundPrestigeBtn.Activated)) do conn:Fire() end
                             end
                         end
                     end)
-                    task.wait(5)
+                    task.wait(3) -- Check every 3 seconds
                 end
             end)
         end
@@ -690,8 +495,6 @@ local function LoadFluentUI()
                     pcall(function()
                         local player = game:GetService("Players").LocalPlayer
                         if player and player:FindFirstChild("PlayerGui") then
-                            local pRemote = RS:FindFirstChild("UpgradeRequestEvent", true) or RS:FindFirstChild("UpgradePurchase", true) or RS:FindFirstChild("Upgrade", true) or RS:FindFirstChild("pUpgrade", true)
-                            
                             local pRemote = RS:FindFirstChild("UpgradeRequestEvent", true) or RS:FindFirstChild("UpgradePurchase", true) or RS:FindFirstChild("Upgrade", true) or RS:FindFirstChild("pUpgrade", true)
                             
                             if pRemote and player.PlayerGui then
@@ -750,6 +553,162 @@ local function LoadFluentUI()
                     end)
                     task.wait(1.5)
                 end
+            end)
+        end
+    end)
+
+    -- ==============================================
+    -- Auto Potion (Weather Event)
+    -- ==============================================
+    local PotionToggle = Tabs.Automation:AddToggle("AutoPotionToggle", {
+        Title = "Auto Potion (On Weather Event)",
+        Default = false
+    })
+
+    local PotionDrop = Tabs.Automation:AddDropdown("PotionTypeDrop", {
+        Title = "Select Potions",
+        Values = {"Luck Potion", "Gold Potion", "XP Potion"},
+        Multi = true,
+        Default = {}
+    })
+
+    PotionDrop:OnChanged(function(Value)
+        local selected = {}
+        for k, v in pairs(Value) do if v then table.insert(selected, k) end end
+        _G_State.PotionTypes = selected
+    end)
+
+    PotionToggle:OnChanged(function()
+        _G_State.AutoPotion = PotionToggle.Value
+        if _G_State.AutoPotion then
+            task.spawn(function()
+                local lastWeatherState = false
+                
+                while _G_State.AutoPotion and getgenv()._AutoRollRunning do
+                    pcall(function()
+                        local player = game:GetService("Players").LocalPlayer
+                        local playerGui = player:FindFirstChild("PlayerGui")
+                        if not playerGui then return end
+                        
+                        -- Check if any Weather Event is active (Precise Path Detection)
+                        local isWeatherActive = false
+                        local statStuff = playerGui:FindFirstChild("StatStuff")
+                        if statStuff then
+                            local stats = statStuff:FindFirstChild("Stats")
+                            if stats then
+                                local weatherTimer = stats:FindFirstChild("WeatherTimer")
+                                -- Check if the weather timer icon is actually visible on screen
+                                if weatherTimer and weatherTimer:IsA("GuiObject") and weatherTimer.Visible then
+                                    isWeatherActive = true
+                                end
+                            end
+                        end
+                        
+                        if isWeatherActive and not lastWeatherState then
+                            -- Weather just started! Use potions.
+                            local pRemote = RS:FindFirstChild("UsePotion", true) or RS:FindFirstChild("UsePotionRequest", true) or RS:FindFirstChild("UsePotionRequestFunction", true)
+                            if pRemote then
+                                for _, potion in ipairs(_G_State.PotionTypes) do
+                                    for i = 1, 2 do -- Use 2 times
+                                        pcall(function()
+                                            if pRemote:IsA("RemoteFunction") then
+                                                pRemote:InvokeServer(potion)
+                                            elseif pRemote:IsA("RemoteEvent") then
+                                                pRemote:FireServer(potion)
+                                            end
+                                        end)
+                                        task.wait(0.5)
+                                    end
+                                end
+                            end
+                            lastWeatherState = true
+                        elseif not isWeatherActive then
+                            lastWeatherState = false
+                        end
+                    end)
+                    task.wait(2)
+                end
+            end)
+        end
+    end)
+
+    -- ==============================================
+    -- Auto Challenges
+    -- ==============================================
+    local ChallengeToggle = Tabs.Automation:AddToggle("AutoChallengeToggle", {
+        Title = "Auto Challenges",
+        Default = false
+    })
+
+    local ChallengeDrop = Tabs.Automation:AddDropdown("ChallengeTypeDrop", {
+        Title = "Challenge Types",
+        Values = {"Regular", "Daily", "Weekly"},
+        Multi = true,
+        Default = {}
+    })
+
+    ChallengeDrop:OnChanged(function(Value)
+        local selected = {}
+        for k, v in pairs(Value) do if v then table.insert(selected, k) end end
+        _G_State.ChallengeTypes = selected
+    end)
+
+    ChallengeToggle:OnChanged(function()
+        _G_State.AutoChallenge = ChallengeToggle.Value
+        if _G_State.AutoChallenge then
+            task.spawn(function()
+                local chalRemote = RS:FindFirstChild("ChallengeStartRequestFunction", true)
+
+                while _G_State.AutoChallenge and getgenv()._AutoRollRunning do
+                    pcall(function()
+                        if not chalRemote then
+                            chalRemote = RS:FindFirstChild("ChallengeStartRequestFunction", true)
+                        end
+                        if not chalRemote or #_G_State.ChallengeTypes == 0 then return end
+
+                        local player = game:GetService("Players").LocalPlayer
+
+                        for _, chalType in ipairs(_G_State.ChallengeTypes) do
+                            if not _G_State.AutoChallenge then break end
+
+                            local started = false
+                            local char = player.Character
+                            local oldPos = char and char.PrimaryPart and char.PrimaryPart.Position
+                            
+                            pcall(function()
+                                chalRemote:InvokeServer(chalType)
+                            end)
+                            
+                            task.wait(2.5) -- Wait for teleport
+                            
+                            char = player.Character
+                            local newPos = char and char.PrimaryPart and char.PrimaryPart.Position
+                            
+                            if oldPos and newPos and (oldPos - newPos).Magnitude > 50 then
+                                started = true
+                            end
+
+                            if not started then continue end
+
+                            _G_State.InChallenge = true
+                            task.wait(5)
+
+                            -- Wait for challenge completion (max 600s)
+                            local startTime = tick()
+                            while (tick() - startTime) < 600 and _G_State.AutoChallenge do
+                                task.wait(3)
+                                if not isGameInChallenge() then
+                                    break
+                                end
+                            end
+
+                            _G_State.InChallenge = false
+                            task.wait(3)
+                        end
+                    end)
+                    task.wait(15)
+                end
+                _G_State.InChallenge = false
             end)
         end
     end)
@@ -1052,7 +1011,7 @@ local function LoadFluentUI()
     Tabs.Fuse:AddSlider("FuseKeepLimitSlider", {
         Title = "Keep Limit",
         Default = 1,
-        Min = 1,
+        Min = 0,
         Max = 20,
         Rounding = 0,
         Callback = function(Value)
@@ -1220,44 +1179,92 @@ local function LoadFluentUI()
     local CurrentPresetName = ""
     local SelectedPreset = "None"
 
+    -- Helper to turn any list or dictionary into Fluent's multi-dropdown format {[option] = true}
+    local function toMultiDict(data)
+        local dict = {}
+        if type(data) == "table" then
+            for k, v in pairs(data) do
+                if type(k) == "number" then
+                    dict[v] = true
+                elseif v == true then
+                    dict[k] = true
+                end
+            end
+        end
+        return dict
+    end
+
     local function applyStateToUI()
         local o = Fluent.Options
         if not o then return end
         
         pcall(function()
+            -- Automation Tab
             if o.AutoRollToggle and _G_State.AutoRoll ~= nil then o.AutoRollToggle:SetValue(_G_State.AutoRoll) end
             if o.RollDelaySlider and _G_State.RollDelay ~= nil then o.RollDelaySlider:SetValue(_G_State.RollDelay) end
             if o.AutoPrestigeToggle and _G_State.AutoPrestige ~= nil then o.AutoPrestigeToggle:SetValue(_G_State.AutoPrestige) end
             if o.AutoUpgradeToggle and _G_State.AutoUpgrade ~= nil then o.AutoUpgradeToggle:SetValue(_G_State.AutoUpgrade) end
             
+            -- Potions
+            if o.AutoPotionToggle and _G_State.AutoPotion ~= nil then o.AutoPotionToggle:SetValue(_G_State.AutoPotion) end
+            if o.PotionTypeDrop and _G_State.PotionTypes then 
+                o.PotionTypeDrop:SetValue(toMultiDict(_G_State.PotionTypes)) 
+            end
+            
+            -- Auto Challenge
+            if o.AutoChallengeToggle and _G_State.AutoChallenge ~= nil then o.AutoChallengeToggle:SetValue(_G_State.AutoChallenge) end
+            if o.ChallengeTypeDrop and _G_State.ChallengeTypes then 
+                o.ChallengeTypeDrop:SetValue(toMultiDict(_G_State.ChallengeTypes)) 
+            end
+            
+            -- Buy Tab
             if o.AutoBuyToggle and _G_State.AutoBuy ~= nil then o.AutoBuyToggle:SetValue(_G_State.AutoBuy) end
             
+            local activeRarities = toMultiDict(_G_State.BuyRarities)
             if o.BuyRarityFilter and _G_State.BuyRarities then
-                local arr = {}
-                for k, v in pairs(_G_State.BuyRarities) do if v then table.insert(arr, k) end end
-                o.BuyRarityFilter:SetValue(arr)
+                o.BuyRarityFilter:SetValue(activeRarities)
             end
             
             for rarity, _ in pairs(UnitsByRarity) do
-                if o["BuyChar_" .. rarity] and _G_State.BuyChars[rarity] then
-                    local arr = {}
-                    for _, v in pairs(_G_State.BuyChars[rarity]) do table.insert(arr, v) end
-                    o["BuyChar_" .. rarity]:SetValue(arr)
-                end
-                if o["BuyBuff_" .. rarity] and _G_State.BuyBuffs[rarity] then
-                    local arr = {}
-                    for _, v in pairs(_G_State.BuyBuffs[rarity]) do table.insert(arr, v) end
-                    o["BuyBuff_" .. rarity]:SetValue(arr)
+                local drops = BuyDropdowns[rarity]
+                local isRaritySelected = (activeRarities[rarity] == true)
+
+                if drops then
+                    if drops.CharDrop then
+                        if _G_State.BuyChars and _G_State.BuyChars[rarity] then
+                            drops.CharDrop:SetValue(toMultiDict(_G_State.BuyChars[rarity]))
+                        end
+                        if drops.CharDrop.UIFrame then
+                            drops.CharDrop.UIFrame.Visible = isRaritySelected
+                        end
+                    end
+
+                    if drops.BuffDrop then
+                        if _G_State.BuyBuffs and _G_State.BuyBuffs[rarity] then
+                            drops.BuffDrop:SetValue(toMultiDict(_G_State.BuyBuffs[rarity]))
+                        end
+                        if drops.BuffDrop.UIFrame then
+                            drops.BuffDrop.UIFrame.Visible = isRaritySelected
+                        end
+                    end
                 end
             end
             
+            -- Fuse Tab
             if o.AutoFuseToggle and _G_State.AutoFuse ~= nil then o.AutoFuseToggle:SetValue(_G_State.AutoFuse) end
             if o.FuseDelaySlider and _G_State.FuseDelay ~= nil then o.FuseDelaySlider:SetValue(_G_State.FuseDelay) end
             if o.FuseKeepLimitSlider and _G_State.FuseKeepLimit ~= nil then o.FuseKeepLimitSlider:SetValue(_G_State.FuseKeepLimit) end
-            if o.FuseCharDrop and _G_State.FuseTargetChar then o.FuseCharDrop:SetValue(_G_State.FuseTargetChar) end
-            if o.FuseBuffDrop and _G_State.FuseTargetBuff then o.FuseBuffDrop:SetValue(_G_State.FuseTargetBuff) end
-            if o.FuseStarDrop and _G_State.FuseTargetStars then o.FuseStarDrop:SetValue(_G_State.FuseTargetStars) end
+            if o.FuseCharDrop and _G_State.FuseTargetChar then 
+                o.FuseCharDrop:SetValue(toMultiDict(_G_State.FuseTargetChar)) 
+            end
+            if o.FuseBuffDrop and _G_State.FuseTargetBuff then 
+                o.FuseBuffDrop:SetValue(toMultiDict(_G_State.FuseTargetBuff)) 
+            end
+            if o.FuseStarDrop and _G_State.FuseTargetStars then 
+                o.FuseStarDrop:SetValue(toMultiDict(_G_State.FuseTargetStars)) 
+            end
             
+            -- Zone Tab
             if o.AutoZoneToggle and _G_State.AutoZone ~= nil then o.AutoZoneToggle:SetValue(_G_State.AutoZone) end
             if o.ZoneDelaySlider and _G_State.ZoneDelay ~= nil then o.ZoneDelaySlider:SetValue(_G_State.ZoneDelay) end
         end)
@@ -1376,6 +1383,29 @@ local function LoadFluentUI()
         end
     end)
 
+    Tabs.Settings:AddButton({
+        Title = "Unload Script",
+        Callback = function()
+            _G_State.AutoRoll = false
+            _G_State.AutoBuy = false
+            _G_State.AutoPrestige = false
+            _G_State.AutoUpgrade = false
+            _G_State.AutoFuse = false
+            _G_State.AutoZone = false
+            _G_State.AutoChallenge = false
+            _G_State.AutoPotion = false
+            getgenv()._AutoRollRunning = false
+            pcall(function() Window:Destroy() end)
+            pcall(function()
+                for _, ui in pairs(game:GetService("CoreGui"):GetChildren()) do
+                    if ui:FindFirstChild("Frame") and ui.Frame:FindFirstChild("CanvasGroup") then
+                        ui:Destroy()
+                    end
+                end
+            end)
+        end
+    })
+
     Window:SelectTab(1)
     Fluent:Notify({
         Title = "Script Ready",
@@ -1384,30 +1414,4 @@ local function LoadFluentUI()
     })
 end
 
-if keyPassed then
-    LoadFluentUI()
-else
-    KeyScreen.Enabled = true
-    UnlockBtn.MouseButton1Click:Connect(function()
-        local entered = Input.Text
-        local valid = false
-        for _, k in ipairs(VALID_KEYS) do
-            if entered == k then valid = true; break end
-        end
-        if valid then
-            pcall(function() if writefile then writefile(savedKeyFile, entered) end end)
-            KeyScreen:Destroy()
-            LoadFluentUI()
-        else
-            Input.Text = "Invalid Key!"
-            Input.TextColor3 = Color3.fromRGB(255, 50, 50)
-            task.wait(1)
-            Input.Text = ""
-            Input.TextColor3 = Color3.fromRGB(255, 255, 255)
-        end
-    end)
-end
-
-
-
-
+LoadFluentUI()
